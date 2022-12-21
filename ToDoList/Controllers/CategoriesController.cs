@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Models;
 using System.Collections.Generic;
@@ -41,7 +43,7 @@ namespace ToDoList.Controllers
     public ActionResult DeleteConfirmed(int id)
     {
       Category thisCategory = _db.Categories.FirstOrDefault(category => category.CategoryId == id);
-      _db.Items.Remove(thisCategory);
+      _db.Categories.Remove(thisCategory);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
@@ -49,7 +51,7 @@ namespace ToDoList.Controllers
     [HttpPost]
     public ActionResult Edit(Category category)
     {
-      _db.Items.Update(category);
+      _db.Categories.Update(category);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
@@ -57,7 +59,7 @@ namespace ToDoList.Controllers
     [HttpPost]
     public ActionResult Create(Category category)
     {
-      _db.Items.Add(category);
+      _db.Categories.Add(category);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
@@ -65,8 +67,8 @@ namespace ToDoList.Controllers
     public ActionResult Details(int id)
     {
       Category thisCategory = _db.Categories
-                                 .Include(category => category.Items)
-                                 .FirstOrDefault(category => category.CategoryId == id);
+                                  .Include(category => category.Items)
+                                  .FirstOrDefault(category => category.CategoryId == id);
       return View(thisCategory);
     }
   }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Models;
@@ -65,6 +66,10 @@ namespace ToDoList.Controllers
     [HttpPost]
     public ActionResult Create(Item item)
     {
+      if (item.CategoryId == 0)
+      {
+        return RedirectToAction("Create");
+      }
       _db.Items.Add(item);
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -72,7 +77,9 @@ namespace ToDoList.Controllers
 
     public ActionResult Details(int id)
     {
-      Item thisItem = _db.Items.FirstOrDefault(item => item.ItemId == id);
+      Item thisItem = _db.Items
+                          .Include(item => item.Category)
+                          .FirstOrDefault(item => item.ItemId == id);
       return View(thisItem);
     }
   }

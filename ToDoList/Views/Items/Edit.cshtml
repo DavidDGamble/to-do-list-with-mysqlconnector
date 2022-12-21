@@ -10,12 +10,16 @@
 
 @using (Html.BeginForm())
 {
-    // Passes the specific item's ItemId on to the controller
-    @Html.HiddenFor(model => model.ItemId)
+  // Passes the specific item's ItemId on to the controller
+  @Html.HiddenFor(model => model.ItemId)
 
-    @Html.LabelFor(model => model.Description)
-    @Html.EditorFor(model => model.Description)
+  @Html.LabelFor(model => model.Description)
+  @Html.EditorFor(model => model.Description)
 
-    <input type="submit" value="Save" />
+  @Html.LabelFor(model => model.Category)
+  @Html.DropDownList("CategoryId")
+
+  <input type="submit" value="Save" />
 }
+
 <p>@Html.ActionLink("Back to list", "Index")</p>
