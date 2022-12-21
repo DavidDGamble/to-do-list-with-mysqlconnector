@@ -1,0 +1,73 @@
+using Microsoft.AspNetCore.Mvc;
+using ToDoList.Models;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ToDoList.Controllers
+{
+  public class CategoriesController : Controller
+  {
+    private readonly ToDoListContext _db; 
+
+    public CategoriesController(ToDoListContext db)
+    {
+      _db = db;
+    }
+
+    public ActionResult Index()
+    {
+      List<Category> model = _db.Categories.ToList();
+      return View(model);
+    }
+
+    public ActionResult Edit(int id)
+    {
+      Category thisCategory = _db.Categories.FirstOrDefault(category => category.CategoryId == id);
+      return View(thisCategory);
+    }
+
+    public ActionResult Create()
+    {
+      return View();
+    }
+
+    public ActionResult Delete(int id)
+    {
+      Category thisCategory = _db.Categories.FirstOrDefault(category => category.CategoryId == id);
+      return View(thisCategory);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public ActionResult DeleteConfirmed(int id)
+    {
+      Category thisCategory = _db.Categories.FirstOrDefault(category => category.CategoryId == id);
+      _db.Items.Remove(thisCategory);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult Edit(Category category)
+    {
+      _db.Items.Update(category);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult Create(Category category)
+    {
+      _db.Items.Add(category);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    public ActionResult Details(int id)
+    {
+      Category thisCategory = _db.Categories
+                                 .Include(category => category.Items)
+                                 .FirstOrDefault(category => category.CategoryId == id);
+      return View(thisCategory);
+    }
+  }
+}
